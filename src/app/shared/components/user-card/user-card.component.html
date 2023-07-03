@@ -1,0 +1,29 @@
+<mat-card class="user-card" matTooltip="Click to edit">
+  <div class="avatar-container">
+    <img
+      [src]="user.avatar"
+      alt="{{ user.firstName }} {{ user.lastName }} - Avatar"
+      class="avatar"
+      loading="lazy"
+    />
+  </div>
+  <mat-card-content>
+    <div class="name">{{ user.firstName }} {{ user.lastName }}</div>
+    <div>
+      <span class="label">Email: </span>
+      <span> {{ user.email }}</span>
+    </div>
+
+    <div>
+      <span class="label">Address: </span>
+      <span>
+        {{ user.street }}, <br />
+        {{ user.city }}, {{ user.country }}.</span
+      >
+    </div>
+    <div>
+      <span class="label"> Zip Code: </span>
+      <span> {{ user.zipCode }}</span>
+    </div>
+  </mat-card-content>
+</mat-card>
