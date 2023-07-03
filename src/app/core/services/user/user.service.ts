@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { faker } from '@faker-js/faker';
-import { User } from '../models/user.model';
+
+import { User } from '@core/models';
 
 @Injectable({
   providedIn: 'root',
