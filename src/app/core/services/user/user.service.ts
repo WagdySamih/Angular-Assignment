@@ -17,6 +17,13 @@ export class UserService {
     return of(users);
   }
 
+  // Get user by Id from LocalStorage
+  getUserById(_id: string): Observable<User | undefined> {
+    const users: User[] = this._getStoredUsers();
+    const user = users.find((user) => user._id == _id);
+    return of(user);
+  }
+
   // Add a single user to LocalStorage
   addUser(user: User): Observable<User[]> {
     const users: User[] = this._getStoredUsers();
@@ -31,12 +38,14 @@ export class UserService {
     const usersToAdd: User[] = [];
     for (let i = 0; i < 15 - users.length; i++) {
       // TODO: Moves user creation using faker to a separate function
+      const firstName = faker.person.firstName();
+      const lastName = faker.person.firstName();
       const user = {
         _id: faker.string.uuid(),
-        firstName: faker.person.firstName(),
-        lastName: faker.person.firstName(),
+        firstName,
+        lastName,
         avatar: faker.image.avatar(),
-        email: faker.internet.email(),
+        email: firstName + '.' + lastName + '@gmail.com',
         street: faker.location.street(),
         city: faker.location.city(),
         country: faker.location.country(),
