@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 
 import { User } from '@core/models';
 import { UserFormModel } from './user-form.model';
+import { UserService } from '@app/core/services';
 
 @Component({
   selector: 'app-user-form',
@@ -13,7 +14,10 @@ export class UserFormComponent implements OnInit {
   @Input() user: User | undefined;
   form!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService
+  ) {}
 
   ngOnInit() {
     this.form = this.formBuilder.group(UserFormModel);
@@ -21,12 +25,14 @@ export class UserFormComponent implements OnInit {
     if (this.user) {
       this.form.patchValue(this.user);
     }
-  }
 
-  submitForm() {
-    if (this.form.valid) {
-      console.log(this.form);
-    }
+    this.form.valueChanges.subscribe((formValue) => {
+      const user: User = {
+        ...this.user,
+        ...formValue,
+      };
+      this.userService.editedUserSubject.next(user);
+    });
   }
 
   getErrorMessage(control: AbstractControl): string {
@@ -39,7 +45,6 @@ export class UserFormComponent implements OnInit {
     if (control.hasError('email')) {
       return 'Please enter a valid email address.';
     }
-    // Handle any additional custom error conditions
     return '';
   }
 }

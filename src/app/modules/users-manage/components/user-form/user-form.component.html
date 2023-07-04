@@ -1,4 +1,4 @@
-<form class="form" [formGroup]="form" (ngSubmit)="submitForm()">
+<form class="form" [formGroup]="form">
   <div class="row-input">
     <mat-form-field appearance="outline">
       <mat-label>First Name</mat-label>
@@ -80,13 +80,4 @@
       Please enter a valid zipCode.
     </mat-error>
   </mat-form-field>
-
-  <!-- <button
-    mat-raised-button
-    color="primary"
-    type="submit"
-    [disabled]="form.invalid"
-  >
-    Submit
-  </button> -->
 </form>

@@ -1,5 +1,12 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  catchError,
+  of,
+  takeUntil,
+} from 'rxjs';
 
 import { FakerService } from '@core/services';
 import { User } from '@core/models';
@@ -7,17 +14,34 @@ import { User } from '@core/models';
 @Injectable({
   providedIn: 'root',
 })
-export class UserService {
-  private localStorageKey = 'users';
-  private usersCnt = 15;
+export class UserService implements OnDestroy {
+  private readonly localStorageKey = 'users';
+  private readonly maxUserCount = 15;
   private userListSubject: BehaviorSubject<User[]> = new BehaviorSubject<
     User[]
   >([]);
+  private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private faker: FakerService) {
-    this._loadUsersFromLocalStorage().subscribe({
-      next: () => this._generateUsersBulk(),
-    });
+  editedUserSubject = new BehaviorSubject<User | null>(null);
+  editedUser$: Observable<User | null> = this.editedUserSubject.asObservable();
+
+  constructor(private fakerService: FakerService) {
+    this.loadUsersFromLocalStorage()
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError((error) => {
+          console.error('Failed to load users from local storage:', error);
+          return of([]);
+        })
+      )
+      .subscribe(() => {
+        this.generateUsersBulk().pipe(takeUntil(this.destroy$)).subscribe();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   getUsers(): Observable<User[]> {
@@ -27,13 +51,13 @@ export class UserService {
   searchUsersByName(searchTerm: string): Observable<User[]> {
     const usersJSON = localStorage.getItem(this.localStorageKey);
     const users: User[] = usersJSON ? JSON.parse(usersJSON) : [];
-    const filteredUsers = users.filter((user) =>
+    const searchedUsers = users.filter((user) =>
       `${user.firstName} ${user.lastName}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
     );
-    this.userListSubject.next(filteredUsers);
-    return of(filteredUsers);
+    this.userListSubject.next(searchedUsers);
+    return of(searchedUsers);
   }
 
   getUserById(id: string): Observable<User | undefined> {
@@ -42,36 +66,55 @@ export class UserService {
     return of(user);
   }
 
-  addUser(): Observable<User[]> {
-    const user = this.faker.generateFakeUser();
+  createUser(): Observable<User[]> {
+    const user = this.fakerService.generateFakeUser();
     let users: User[] = this.userListSubject.value;
     users = [user, ...users];
-    this._updateLocalStorage(users);
+    this.updateLocalStorage(users);
     this.userListSubject.next(users);
     return of(users);
   }
 
-  private _generateUsersBulk(): Observable<User[]> {
-    const users: User[] = this.userListSubject.value;
-    const newUsers: User[] = [];
-    for (let i = 0; i < this.usersCnt - users.length; i++) {
-      newUsers.push(this.faker.generateFakeUser());
+  editUser(editedUser: User): void {
+    const users = this.userListSubject.value.map((user) =>
+      user._id === editedUser._id ? editedUser : user
+    );
+    this.updateLocalStorage(users);
+    this.userListSubject.next(users);
+  }
+
+  setEditedUser(user: User | null): void {
+    this.editedUserSubject.next(user);
+  }
+
+  private generateUsersBulk(): Observable<User[]> {
+    const users = this.userListSubject.value;
+    const newUsers = [];
+    for (let i = 0; i < this.maxUserCount - users.length; i++) {
+      newUsers.push(this.fakerService.generateFakeUser());
     }
-
-    users.push(...newUsers);
-    this._updateLocalStorage(users);
-    this.userListSubject.next(users);
-    return of(users);
+    const updatedUsers = [
+      ...users,
+      ...newUsers.slice(0, this.maxUserCount - users.length),
+    ];
+    this.updateLocalStorage(updatedUsers);
+    this.userListSubject.next(updatedUsers);
+    return of(updatedUsers);
   }
 
-  private _loadUsersFromLocalStorage(): Observable<User[]> {
-    const usersJSON = localStorage.getItem(this.localStorageKey);
-    const users: User[] = usersJSON ? JSON.parse(usersJSON) : [];
-    this.userListSubject.next(users);
-    return of(users);
+  private loadUsersFromLocalStorage(): Observable<User[]> {
+    try {
+      const usersJSON = localStorage.getItem(this.localStorageKey);
+      const users: User[] = usersJSON ? JSON.parse(usersJSON) : [];
+      this.userListSubject.next(users);
+      return of(users);
+    } catch (error) {
+      console.error('Failed to load users from local storage:', error);
+      return of([]);
+    }
   }
 
-  private _updateLocalStorage(users: User[]): void {
+  private updateLocalStorage(users: User[]): void {
     localStorage.setItem(this.localStorageKey, JSON.stringify(users));
   }
 }
