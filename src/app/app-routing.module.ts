@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from '@app/modules/users/containers/dashboard.component';
+import { UsersComponent } from '@app/modules/users/containers/users.component';
 
 const routes: Routes = [
-  { path: 'dashboard/users', component: DashboardComponent },
+  { path: 'dashboard/users', component: UsersComponent },
   { path: '', redirectTo: '/dashboard/users', pathMatch: 'full' },
 ];
 @NgModule({
