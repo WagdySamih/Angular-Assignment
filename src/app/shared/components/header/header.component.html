@@ -4,26 +4,18 @@
       <mat-form-field appearance="fill" class="search-input">
         <mat-label>Search</mat-label>
         <input
-          [disabled]="!isDashboard"
+          [disabled]="!isSearchEnabled"
           matInput
           type="search"
           [(ngModel)]="searchValue"
           (ngModelChange)="searchUsers()"
         />
-        <button
-          matSuffix
-          mat-icon-button
-          aria-label="Clear"
-          *ngIf="searchValue"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
       </mat-form-field>
 
       <div class="buttons-container">
         <button
           mat-raised-button
-          [disabled]="!isDashboard"
+          [disabled]="!isCreateEnabled"
           color="primary"
           class="create-button"
           (click)="createUser()"
@@ -31,10 +23,11 @@
           Create
         </button>
         <button
-          [disabled]="!isUserDetail"
+          [disabled]="!isSaveEnabled"
           mat-raised-button
           color="accent"
           class="save-button"
+          (click)="saveUser()"
         >
           Save
         </button>

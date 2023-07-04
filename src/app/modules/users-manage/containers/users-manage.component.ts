@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '@core/services';
 import { User } from '@core/models';
+import { HeaderService } from '@core/services';
 
 @Component({
   selector: 'app-users-manage',
@@ -13,10 +14,15 @@ export class UsersManageComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private userService: UserService
+    private userService: UserService,
+    private headerService: HeaderService
   ) {}
 
   ngOnInit(): void {
+    this.headerService.setIsCreateEnabled(false);
+    this.headerService.setIsSearchEnabled(false);
+    this.headerService.setIsSaveEnabled(true);
+
     this.route.paramMap.subscribe((params) => {
       const userId = params.get('userId');
       if (!userId) return;
@@ -26,9 +32,5 @@ export class UsersManageComponent implements OnInit {
         complete: () => console.log(this.user),
       });
     });
-  }
-
-  navigateBack() {
-    console.log('');
   }
 }

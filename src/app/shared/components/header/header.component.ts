@@ -1,42 +1,43 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { UserService } from '@app/core/services';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { User } from '@app/core/models';
+import { UserService, HeaderService } from '@core/services';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
   searchValue = '';
-  isDashboard = false;
-  isUserDetail = false;
-  private routeSubscription!: Subscription;
+  isSearchEnabled = false;
+  isCreateEnabled = false;
+  isSaveEnabled = false;
+  editedUser: User | null = null;
 
-  constructor(private router: Router, private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private headerService: HeaderService
+  ) {}
 
   ngOnInit() {
-    this.routeSubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.handleNavigationEvent(event);
-      }
+    this.headerService.isSearchEnabled$.subscribe((value) => {
+      this.isSearchEnabled = value;
+    });
+
+    this.headerService.isCreateEnabled$.subscribe((value) => {
+      this.isCreateEnabled = value;
+    });
+
+    this.headerService.isSaveEnabled$.subscribe((value) => {
+      this.isSaveEnabled = value;
+    });
+
+    this.userService.editedUser$.subscribe((value) => {
+      this.editedUser = value;
     });
   }
 
-  ngOnDestroy() {
-    this.routeSubscription.unsubscribe();
-  }
-
-  handleNavigationEvent(event: NavigationEnd) {
-    const url = event.urlAfterRedirects;
-    const urlWithoutQueryParams = url.split('?')[0];
-    this.isUserDetail = urlWithoutQueryParams.startsWith('/dashboard/users/');
-    this.isDashboard =
-      urlWithoutQueryParams === '/dashboard/users' && !this.isUserDetail;
-  }
-
   createUser() {
-    this.userService.addUser().subscribe({
+    this.userService.createUser().subscribe({
       next: () => console.log('Create User Success'),
       error: () => console.log('Error while creating user'),
     });
@@ -44,5 +45,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   searchUsers() {
     this.userService.searchUsersByName(this.searchValue);
+  }
+
+  saveUser() {
+    if (!this.editedUser) return;
+    this.userService.editUser(this.editedUser);
   }
 }
