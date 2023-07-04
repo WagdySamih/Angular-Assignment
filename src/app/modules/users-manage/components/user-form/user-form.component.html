@@ -1,0 +1,92 @@
+<form class="form" [formGroup]="form" (ngSubmit)="submitForm()">
+  <div class="row-input">
+    <mat-form-field appearance="outline">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="firstName" placeholder="First Name" />
+      <mat-error
+        *ngIf="
+          form.controls['firstName'].invalid &&
+          form.controls['firstName'].touched
+        "
+      >
+        Please enter a valid first name.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Last Name</mat-label>
+      <input matInput formControlName="lastName" placeholder="Last Name" />
+      <mat-error
+        *ngIf="
+          form.controls['lastName'].invalid && form.controls['lastName'].touched
+        "
+      >
+        Please enter a valid last name.
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" placeholder="Email" />
+    <mat-error
+      *ngIf="form.controls['email'].invalid && form.controls['email'].touched"
+    >
+      Please enter a valid email address.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Street</mat-label>
+    <input matInput formControlName="street" placeholder="Street" />
+    <mat-error
+      *ngIf="form.controls['street'].invalid && form.controls['street'].touched"
+    >
+      Please enter a valid street address.
+    </mat-error>
+  </mat-form-field>
+  <div class="row-input">
+    <mat-form-field appearance="outline">
+      <mat-label>Country</mat-label>
+      <input matInput formControlName="country" placeholder="Country" />
+      <mat-error
+        *ngIf="
+          form.controls['country'].invalid && form.controls['country'].touched
+        "
+      >
+        Please enter a valid country.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>City</mat-label>
+      <input matInput formControlName="city" placeholder="City" />
+      <mat-error
+        *ngIf="form.controls['city'].invalid && form.controls['city'].touched"
+      >
+        Please enter a valid city.
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Zip Code</mat-label>
+    <input matInput formControlName="zipCode" placeholder="ZipCode" />
+    <mat-error
+      *ngIf="
+        form.controls['zipCode'].invalid && form.controls['zipCode'].touched
+      "
+    >
+      Please enter a valid zipCode.
+    </mat-error>
+  </mat-form-field>
+
+  <!-- <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    [disabled]="form.invalid"
+  >
+    Submit
+  </button> -->
+</form>

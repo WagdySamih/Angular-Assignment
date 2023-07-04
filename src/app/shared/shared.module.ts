@@ -12,7 +12,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [HeaderComponent, FooterComponent],
@@ -27,6 +28,12 @@ import { FormsModule } from '@angular/forms';
     MatGridListModule,
     MatCardModule,
     MatTooltipModule,
+
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
   ],
   exports: [
     HeaderComponent,
@@ -41,6 +48,13 @@ import { FormsModule } from '@angular/forms';
     MatGridListModule,
     MatCardModule,
     MatTooltipModule,
+
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
   ],
 })
 export class SharedModule {}

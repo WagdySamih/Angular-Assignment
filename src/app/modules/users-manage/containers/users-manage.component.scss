@@ -1,0 +1,19 @@
+@import "../../../../styles//variables";
+
+.container {
+  max-width: $max-width;
+  min-height: calc(100vh - 160px);
+  margin: auto;
+
+  .heading {
+    font-size: $fz-heading;
+    margin: 2rem auto;
+    text-decoration: underline;
+    max-width: 700px;
+
+    a {
+      color: $primary-color;
+      padding-inline-end: 0.5rem;
+    }
+  }
+}
