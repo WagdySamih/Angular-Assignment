@@ -12,11 +12,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { UserCardComponent } from './components/user-card/user-card.component';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [HeaderComponent, FooterComponent, UserCardComponent],
+  declarations: [HeaderComponent, FooterComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -32,7 +31,6 @@ import { FormsModule } from '@angular/forms';
   exports: [
     HeaderComponent,
     FooterComponent,
-    UserCardComponent,
 
     MatToolbarModule,
     MatToolbarModule,
