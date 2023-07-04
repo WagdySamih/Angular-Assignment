@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { faker } from '@faker-js/faker';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
+import { FakerService } from '@core/services';
 import { User } from '@core/models';
 
 @Injectable({
@@ -9,63 +9,68 @@ import { User } from '@core/models';
 })
 export class UserService {
   private localStorageKey = 'users';
+  private usersCnt = 15;
+  private userListSubject: BehaviorSubject<User[]> = new BehaviorSubject<
+    User[]
+  >([]);
 
-  // Get all users from LocalStorage
-  getUsers(): Observable<User[]> {
-    const usersJSON = localStorage.getItem(this.localStorageKey);
-    const users: User[] = usersJSON ? JSON.parse(usersJSON) : [];
-    return of(users);
+  constructor(private faker: FakerService) {
+    this._loadUsersFromLocalStorage().subscribe({
+      next: () => this._generateUsersBulk(),
+    });
   }
 
-  // Get user by Id from LocalStorage
-  getUserById(_id: string): Observable<User | undefined> {
-    const users: User[] = this._getStoredUsers();
-    const user = users.find((user) => user._id == _id);
+  getUsers(): Observable<User[]> {
+    return this.userListSubject.asObservable();
+  }
+
+  searchUsersByName(searchTerm: string): Observable<User[]> {
+    const usersJSON = localStorage.getItem(this.localStorageKey);
+    const users: User[] = usersJSON ? JSON.parse(usersJSON) : [];
+    const filteredUsers = users.filter((user) =>
+      `${user.firstName} ${user.lastName}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+    this.userListSubject.next(filteredUsers);
+    return of(filteredUsers);
+  }
+
+  getUserById(id: string): Observable<User | undefined> {
+    const users: User[] = this.userListSubject.value;
+    const user = users.find((user) => user._id === id);
     return of(user);
   }
 
-  // Add a single user to LocalStorage
-  addUser(user: User): Observable<User[]> {
-    const users: User[] = this._getStoredUsers();
-    users.push(user);
+  addUser(): Observable<User[]> {
+    const user = this.faker.generateFakeUser();
+    let users: User[] = this.userListSubject.value;
+    users = [user, ...users];
     this._updateLocalStorage(users);
+    this.userListSubject.next(users);
     return of(users);
   }
 
-  // Add multiple users to LocalStorage
-  addMultipleUsers(): Observable<User[]> {
-    const users: User[] = this._getStoredUsers();
-    const usersToAdd: User[] = [];
-    for (let i = 0; i < 15 - users.length; i++) {
-      // TODO: Moves user creation using faker to a separate function
-      const firstName = faker.person.firstName();
-      const lastName = faker.person.firstName();
-      const user = {
-        _id: faker.string.uuid(),
-        firstName,
-        lastName,
-        avatar: faker.image.avatar(),
-        email: firstName + '.' + lastName + '@gmail.com',
-        street: faker.location.street(),
-        city: faker.location.city(),
-        country: faker.location.country(),
-        zipCode: faker.location.zipCode(),
-      };
-      usersToAdd.push(user);
+  private _generateUsersBulk(): Observable<User[]> {
+    const users: User[] = this.userListSubject.value;
+    const newUsers: User[] = [];
+    for (let i = 0; i < this.usersCnt - users.length; i++) {
+      newUsers.push(this.faker.generateFakeUser());
     }
 
-    users.push(...usersToAdd);
+    users.push(...newUsers);
     this._updateLocalStorage(users);
+    this.userListSubject.next(users);
     return of(users);
   }
 
-  // Helper method to get users from LocalStorage
-  private _getStoredUsers(): User[] {
+  private _loadUsersFromLocalStorage(): Observable<User[]> {
     const usersJSON = localStorage.getItem(this.localStorageKey);
-    return usersJSON ? JSON.parse(usersJSON) : [];
+    const users: User[] = usersJSON ? JSON.parse(usersJSON) : [];
+    this.userListSubject.next(users);
+    return of(users);
   }
 
-  // Helper method to update LocalStorage with updated user data
   private _updateLocalStorage(users: User[]): void {
     localStorage.setItem(this.localStorageKey, JSON.stringify(users));
   }
