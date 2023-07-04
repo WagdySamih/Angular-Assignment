@@ -29,8 +29,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   handleNavigationEvent(event: NavigationEnd) {
     const url = event.urlAfterRedirects;
-    this.isUserDetail = url.startsWith('/dashboard/user/');
-    this.isDashboard = url === '/dashboard' && !this.isUserDetail;
+    const urlWithoutQueryParams = url.split('?')[0];
+    this.isUserDetail = urlWithoutQueryParams.startsWith('/dashboard/users/');
+    this.isDashboard =
+      urlWithoutQueryParams === '/dashboard/users' && !this.isUserDetail;
   }
 
   createUser() {
