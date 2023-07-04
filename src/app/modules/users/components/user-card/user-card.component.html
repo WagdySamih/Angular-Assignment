@@ -1,4 +1,8 @@
-<mat-card class="user-card" matTooltip="Click to edit">
+<mat-card
+  class="user-card"
+  matTooltip="Click to edit"
+  (click)="navigateToEditPage()"
+>
   <div class="avatar-container">
     <img
       [src]="user.avatar"
