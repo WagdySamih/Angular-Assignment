@@ -6,5 +6,6 @@
 
     User Edit Page
   </h1>
-  <app-user-form [user]="user" />
+  <app-user-form *ngIf="user" [user]="user" />
+  <app-empty-state *ngIf="!user" message="User Not Found." />
 </main>
