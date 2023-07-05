@@ -1,7 +1,8 @@
 <div class="grid-container">
-  <mat-grid-list cols="3" rowHeight="300px">
+  <mat-grid-list cols="3" rowHeight="300px" *ngIf="users.length">
     <mat-grid-tile *ngFor="let user of users">
       <app-user-card [user]="user" />
     </mat-grid-tile>
   </mat-grid-list>
+  <app-empty-state *ngIf="!users.length" message="No Users Found." />
 </div>
