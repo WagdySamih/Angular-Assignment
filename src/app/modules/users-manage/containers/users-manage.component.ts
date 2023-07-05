@@ -28,7 +28,6 @@ export class UsersManageComponent implements OnInit {
     this.route.paramMap.subscribe((params) => {
       const userId = params.get('userId');
       if (!userId) return;
-      // TODO: Handle User not found
       this.userService.getUserById(userId).subscribe({
         next: (user) => (this.user = user),
         error: (error) => this.logger.error(error),
