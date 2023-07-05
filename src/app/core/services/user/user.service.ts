@@ -8,15 +8,19 @@ import {
   takeUntil,
 } from 'rxjs';
 
-import { FakerService, LoggerService } from '@core/services';
+import {
+  FakerService,
+  LoggerService,
+  LocalStorageService,
+} from '@core/services';
 import { User } from '@core/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService implements OnDestroy {
-  private readonly localStorageKey = 'users';
-  private readonly maxUserCount = 15;
+  private readonly LOCAL_STORAGE_KEY = 'users';
+  private readonly MAX_USERS_CNT = 15;
   private userListSubject: BehaviorSubject<User[]> = new BehaviorSubject<
     User[]
   >([]);
@@ -27,9 +31,10 @@ export class UserService implements OnDestroy {
 
   constructor(
     private fakerService: FakerService,
+    private localStorageService: LocalStorageService,
     private logger: LoggerService
   ) {
-    this.loadUsersFromLocalStorage()
+    this.initializeLocalStorageUsers()
       .pipe(
         takeUntil(this.destroy$),
         catchError((error) => {
@@ -52,8 +57,8 @@ export class UserService implements OnDestroy {
   }
 
   searchUsersByName(searchTerm: string): Observable<User[]> {
-    const usersJSON = localStorage.getItem(this.localStorageKey);
-    const users: User[] = usersJSON ? JSON.parse(usersJSON) : [];
+    const users: User[] =
+      this.localStorageService.get<User[]>(this.LOCAL_STORAGE_KEY) || [];
     const searchedUsers = users.filter((user) =>
       `${user.firstName} ${user.lastName}`
         .toLowerCase()
@@ -73,7 +78,7 @@ export class UserService implements OnDestroy {
     const user = this.fakerService.generateFakeUser();
     let users: User[] = this.userListSubject.value;
     users = [user, ...users];
-    this.updateLocalStorage(users);
+    this.localStorageService.set(this.LOCAL_STORAGE_KEY, users);
     this.userListSubject.next(users);
     return of(users);
   }
@@ -82,7 +87,7 @@ export class UserService implements OnDestroy {
     const users = this.userListSubject.value.map((user) =>
       user._id === editedUser._id ? editedUser : user
     );
-    this.updateLocalStorage(users);
+    this.localStorageService.set(this.LOCAL_STORAGE_KEY, users);
     this.userListSubject.next(users);
     return of(editedUser);
   }
@@ -93,32 +98,26 @@ export class UserService implements OnDestroy {
 
   private generateUsersBulk(): Observable<User[]> {
     const users = this.userListSubject.value;
-    const newUsers = [];
-    for (let i = 0; i < this.maxUserCount - users.length; i++) {
-      newUsers.push(this.fakerService.generateFakeUser());
-    }
-    const updatedUsers = [
-      ...users,
-      ...newUsers.slice(0, this.maxUserCount - users.length),
-    ];
-    this.updateLocalStorage(updatedUsers);
+    const newUsers = this.fakerService.generateFakeUsers(
+      this.MAX_USERS_CNT - users.length
+    );
+
+    const updatedUsers = [...users, ...newUsers];
+
+    this.localStorageService.set(this.LOCAL_STORAGE_KEY, updatedUsers);
     this.userListSubject.next(updatedUsers);
     return of(updatedUsers);
   }
 
-  private loadUsersFromLocalStorage(): Observable<User[]> {
+  private initializeLocalStorageUsers(): Observable<User[]> {
     try {
-      const usersJSON = localStorage.getItem(this.localStorageKey);
-      const users: User[] = usersJSON ? JSON.parse(usersJSON) : [];
+      const users =
+        this.localStorageService.get<User[]>(this.LOCAL_STORAGE_KEY) || [];
       this.userListSubject.next(users);
       return of(users);
     } catch (error) {
       this.logger.error(error);
       return of([]);
     }
-  }
-
-  private updateLocalStorage(users: User[]): void {
-    localStorage.setItem(this.localStorageKey, JSON.stringify(users));
   }
 }
