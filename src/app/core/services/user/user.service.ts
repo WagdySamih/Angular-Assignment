@@ -8,7 +8,7 @@ import {
   takeUntil,
 } from 'rxjs';
 
-import { FakerService } from '@core/services';
+import { FakerService, LoggerService } from '@core/services';
 import { User } from '@core/models';
 
 @Injectable({
@@ -25,12 +25,15 @@ export class UserService implements OnDestroy {
   editedUserSubject = new BehaviorSubject<User | null>(null);
   editedUser$: Observable<User | null> = this.editedUserSubject.asObservable();
 
-  constructor(private fakerService: FakerService) {
+  constructor(
+    private fakerService: FakerService,
+    private logger: LoggerService
+  ) {
     this.loadUsersFromLocalStorage()
       .pipe(
         takeUntil(this.destroy$),
         catchError((error) => {
-          console.error('Failed to load users from local storage:', error);
+          this.logger.error(error);
           return of([]);
         })
       )
@@ -75,12 +78,13 @@ export class UserService implements OnDestroy {
     return of(users);
   }
 
-  editUser(editedUser: User): void {
+  editUser(editedUser: User): Observable<User> {
     const users = this.userListSubject.value.map((user) =>
       user._id === editedUser._id ? editedUser : user
     );
     this.updateLocalStorage(users);
     this.userListSubject.next(users);
+    return of(editedUser);
   }
 
   setEditedUser(user: User | null): void {
@@ -109,7 +113,7 @@ export class UserService implements OnDestroy {
       this.userListSubject.next(users);
       return of(users);
     } catch (error) {
-      console.error('Failed to load users from local storage:', error);
+      this.logger.error(error);
       return of([]);
     }
   }

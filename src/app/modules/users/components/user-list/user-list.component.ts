@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '@core/services';
+import { LoggerService, UserService } from '@core/services';
 import { User } from '@core/models';
 
 @Component({
@@ -10,12 +10,15 @@ import { User } from '@core/models';
 export class UserListComponent implements OnInit {
   users: User[] = [];
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private logger: LoggerService
+  ) {}
 
   ngOnInit(): void {
     this.userService.getUsers().subscribe({
       next: (users: User[]) => (this.users = users),
-      error: (error) => console.log('error while getting users: ', error),
+      error: (error) => this.logger.error(error),
     });
   }
 }

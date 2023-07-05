@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '@app/core/models';
-import { UserService, HeaderService } from '@core/services';
+import { UserService, HeaderService, LoggerService } from '@core/services';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -15,7 +15,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit() {
@@ -38,17 +39,23 @@ export class HeaderComponent implements OnInit {
 
   createUser() {
     this.userService.createUser().subscribe({
-      next: () => console.log('Create User Success'),
-      error: () => console.log('Error while creating user'),
+      next: () => this.logger.success('User is created successfully'),
+      error: () => this.logger.error('Error while creating user: '),
     });
   }
 
   searchUsers() {
-    this.userService.searchUsersByName(this.searchValue);
+    this.userService.searchUsersByName(this.searchValue).subscribe({
+      next: () => this.logger.info('Search done successfully'),
+      error: () => this.logger.error('Error while search users'),
+    });
   }
 
   saveUser() {
     if (!this.editedUser) return;
-    this.userService.editUser(this.editedUser);
+    this.userService.editUser(this.editedUser).subscribe({
+      next: () => this.logger.success('User is saved successfully'),
+      error: () => this.logger.error('Error while saving user'),
+    });
   }
 }

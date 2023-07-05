@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UserService } from '@core/services';
+import { LoggerService, UserService } from '@core/services';
 import { User } from '@core/models';
 import { HeaderService } from '@core/services';
 
@@ -15,7 +15,8 @@ export class UsersManageComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -29,7 +30,7 @@ export class UsersManageComponent implements OnInit {
       // TODO: Handle User not found
       this.userService.getUserById(userId).subscribe({
         next: (user) => (this.user = user),
-        complete: () => console.log(this.user),
+        error: (error) => this.logger.error(error),
       });
     });
   }
