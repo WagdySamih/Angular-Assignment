@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from '@app/core/models';
 import { UserService, HeaderService, LoggerService } from '@core/services';
 @Component({
@@ -14,6 +15,7 @@ export class HeaderComponent implements OnInit {
   editedUser: User | null = null;
 
   constructor(
+    private router: Router,
     private userService: UserService,
     private headerService: HeaderService,
     private logger: LoggerService
@@ -54,7 +56,10 @@ export class HeaderComponent implements OnInit {
   saveUser() {
     if (!this.editedUser) return;
     this.userService.editUser(this.editedUser).subscribe({
-      next: () => this.logger.success('User is saved successfully'),
+      next: () => {
+        this.logger.success('User is saved successfully');
+        this.router.navigate(['/dashboard/users']);
+      },
       error: () => this.logger.error('Error while saving user'),
     });
   }
