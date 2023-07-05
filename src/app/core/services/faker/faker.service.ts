@@ -15,11 +15,11 @@ export class FakerService {
       firstName,
       lastName,
       avatar: faker.image.avatar(),
-      email: firstName + '.' + lastName + '@gmail.com',
+      email: (firstName + '.' + lastName + '@gmail.com').toLowerCase(),
       street: faker.location.street(),
       city: faker.location.city(),
       country: faker.location.country(),
-      zipCode: faker.location.zipCode(),
+      zipCode: faker.location.zipCode().replace(/-/g, ''),
     };
   }
 }
