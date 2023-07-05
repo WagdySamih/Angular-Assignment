@@ -22,7 +22,8 @@ export class UsersManageComponent implements OnInit {
   ngOnInit(): void {
     this.headerService.setIsCreateEnabled(false);
     this.headerService.setIsSearchEnabled(false);
-    this.headerService.setIsSaveEnabled(true);
+    // Default is false tell we touch or change something in the form
+    this.headerService.setIsSaveEnabled(false);
 
     this.route.paramMap.subscribe((params) => {
       const userId = params.get('userId');
