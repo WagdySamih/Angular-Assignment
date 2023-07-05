@@ -24,16 +24,4 @@ export class HeaderService {
   setIsSaveEnabled(value: boolean) {
     this.isSaveEnabled.next(value);
   }
-
-  createUser() {
-    //
-  }
-
-  saveUser() {
-    //
-  }
-
-  searchUsers() {
-    //
-  }
 }
