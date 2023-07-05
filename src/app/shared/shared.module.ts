@@ -14,9 +14,10 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ErrorMessageComponent } from './components/error-message/error-message.component';
 
 @NgModule({
-  declarations: [HeaderComponent, FooterComponent],
+  declarations: [HeaderComponent, FooterComponent, ErrorMessageComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -38,6 +39,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   exports: [
     HeaderComponent,
     FooterComponent,
+    ErrorMessageComponent,
 
     MatToolbarModule,
     MatToolbarModule,
