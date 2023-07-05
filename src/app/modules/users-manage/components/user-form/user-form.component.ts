@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 
 import { User } from '@core/models';
 import { UserFormModel } from './user-form.model';
-import { UserService } from '@app/core/services';
+import { HeaderService, UserService } from '@app/core/services';
 
 @Component({
   selector: 'app-user-form',
@@ -16,7 +16,8 @@ export class UserFormComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private headerService: HeaderService
   ) {}
 
   ngOnInit() {
@@ -32,6 +33,10 @@ export class UserFormComponent implements OnInit {
         ...formValue,
       };
       this.userService.editedUserSubject.next(user);
+    });
+
+    this.form.statusChanges.subscribe((status) => {
+      this.headerService.setIsSaveEnabled(status === 'VALID');
     });
   }
 
