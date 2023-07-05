@@ -13,7 +13,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorMessageComponent } from './components/error-message/error-message.component';
 import { EmptyStateComponent } from './components/empty-state/empty-state.component';
 
@@ -26,7 +25,10 @@ import { EmptyStateComponent } from './components/empty-state/empty-state.compon
   ],
   imports: [
     CommonModule,
+
+    ReactiveFormsModule,
     FormsModule,
+
     MatToolbarModule,
     MatFormFieldModule,
     MatInputModule,
@@ -35,9 +37,6 @@ import { EmptyStateComponent } from './components/empty-state/empty-state.compon
     MatGridListModule,
     MatCardModule,
     MatTooltipModule,
-
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
     MatInputModule,
     MatFormFieldModule,
     MatButtonModule,
@@ -48,6 +47,9 @@ import { EmptyStateComponent } from './components/empty-state/empty-state.compon
     ErrorMessageComponent,
     EmptyStateComponent,
 
+    FormsModule,
+    ReactiveFormsModule,
+
     MatToolbarModule,
     MatToolbarModule,
     MatFormFieldModule,
@@ -57,10 +59,6 @@ import { EmptyStateComponent } from './components/empty-state/empty-state.compon
     MatGridListModule,
     MatCardModule,
     MatTooltipModule,
-
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
     MatInputModule,
     MatFormFieldModule,
     MatButtonModule,
