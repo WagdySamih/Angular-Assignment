@@ -9,7 +9,7 @@
           form.controls['firstName'].touched
         "
       >
-        Please enter a valid first name.
+        {{ getErrorMessage(form.controls['firstName']) }}
       </mat-error>
     </mat-form-field>
 
@@ -21,7 +21,7 @@
           form.controls['lastName'].invalid && form.controls['lastName'].touched
         "
       >
-        Please enter a valid last name.
+        {{ getErrorMessage(form.controls['lastName']) }}
       </mat-error>
     </mat-form-field>
   </div>
@@ -32,7 +32,7 @@
     <mat-error
       *ngIf="form.controls['email'].invalid && form.controls['email'].touched"
     >
-      Please enter a valid email address.
+      {{ getErrorMessage(form.controls['email']) }}
     </mat-error>
   </mat-form-field>
 
@@ -42,7 +42,7 @@
     <mat-error
       *ngIf="form.controls['street'].invalid && form.controls['street'].touched"
     >
-      Please enter a valid street address.
+      {{ getErrorMessage(form.controls['street']) }}
     </mat-error>
   </mat-form-field>
   <div class="row-input">
@@ -54,7 +54,7 @@
           form.controls['country'].invalid && form.controls['country'].touched
         "
       >
-        Please enter a valid country.
+        {{ getErrorMessage(form.controls['country']) }}
       </mat-error>
     </mat-form-field>
 
@@ -64,7 +64,7 @@
       <mat-error
         *ngIf="form.controls['city'].invalid && form.controls['city'].touched"
       >
-        Please enter a valid city.
+        {{ getErrorMessage(form.controls['city']) }}
       </mat-error>
     </mat-form-field>
   </div>
@@ -77,7 +77,7 @@
         form.controls['zipCode'].invalid && form.controls['zipCode'].touched
       "
     >
-      Please enter a valid zipCode.
+      {{ getErrorMessage(form.controls['zipCode']) }}
     </mat-error>
   </mat-form-field>
 </form>
