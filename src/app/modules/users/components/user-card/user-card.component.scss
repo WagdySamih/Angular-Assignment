@@ -32,6 +32,18 @@
     display: inline;
   }
 
+  .email-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .email {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-left: 5px;
+  }
+
   .name {
     font-weight: 600;
     font-size: $fz-xl;
