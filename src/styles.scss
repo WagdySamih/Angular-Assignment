@@ -36,3 +36,20 @@ body {
   margin: 0;
   font-family: $font-family;
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px $secondary-color;
+  border-radius: $border-radius;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $primary-color;
+  border-radius: $border-radius;
+}
