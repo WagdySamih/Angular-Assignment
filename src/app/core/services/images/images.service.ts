@@ -22,8 +22,7 @@ export class ImagesService {
     try {
       this.avatarImages =
         this.localStorageService.get<string[]>(this.AVATAR_IMAGES_KEY) || [];
-
-      if (!this.avatarImages) {
+      if (!this.avatarImages.length) {
         this.avatarImages = this.generateRandomImages(this.AVATAR_IMAGES_CNT);
         this.localStorageService.set(this.AVATAR_IMAGES_KEY, this.avatarImages);
       }
