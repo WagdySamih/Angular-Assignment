@@ -2,8 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 
 import { User } from '@core/models';
+import {
+  HeaderService,
+  UserService,
+  ValidatorsService,
+} from '@app/core/services';
+
 import { UserFormModel } from './user-form.model';
-import { HeaderService, UserService } from '@app/core/services';
 
 @Component({
   selector: 'app-user-form',
@@ -17,7 +22,8 @@ export class UserFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private validators: ValidatorsService
   ) {}
 
   ngOnInit() {
@@ -41,23 +47,6 @@ export class UserFormComponent implements OnInit {
   }
 
   getErrorMessage(control: AbstractControl): string {
-    if (control.hasError('required')) {
-      return 'This field is required.';
-    }
-    if (control.hasError('minlength')) {
-      const minLength = control.errors?.['minlength'].requiredLength;
-      return `Minimum length is ${minLength} characters.`;
-    }
-    if (control.hasError('maxlength')) {
-      const maxLength = control.errors?.['maxlength'].requiredLength;
-      return `Maximum length is ${maxLength} characters.`;
-    }
-    if (control.hasError('pattern')) {
-      return 'Please enter a valid value.';
-    }
-    if (control.hasError('email')) {
-      return 'Please enter a valid email address.';
-    }
-    return '';
+    return this.validators.getErrorMessage(control);
   }
 }
