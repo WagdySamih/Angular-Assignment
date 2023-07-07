@@ -1,27 +1,30 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
+import { ERROR_MESSAGES } from '@core/constants';
+
 @Injectable({
   providedIn: 'root',
 })
 export class ValidatorsService {
   getErrorMessage(control: AbstractControl): string {
     if (control.hasError('required')) {
-      return 'This field is required.';
+      return ERROR_MESSAGES.required;
     }
     if (control.hasError('minlength')) {
       const minLength = control.errors?.['minlength'].requiredLength;
-      return `Minimum length is ${minLength} characters.`;
+      return ERROR_MESSAGES.minLength(minLength);
     }
     if (control.hasError('maxlength')) {
       const maxLength = control.errors?.['maxlength'].requiredLength;
-      return `Maximum length is ${maxLength} characters.`;
+      return ERROR_MESSAGES.maxLength(maxLength);
     }
     if (control.hasError('pattern')) {
-      return 'Please enter a valid value.';
+      const pattern = control.errors?.['pattern'].requiredPattern;
+      return ERROR_MESSAGES.pattern[pattern] || ERROR_MESSAGES.pattern.default;
     }
     if (control.hasError('email')) {
-      return 'Please enter a valid email address.';
+      return ERROR_MESSAGES.email;
     }
     return '';
   }

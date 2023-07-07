@@ -1,6 +1,5 @@
 import { Validators } from '@angular/forms';
-const LETTERS_ONLY_PATTERN = '[a-zA-Z ]*';
-const NUMBERS_ONLY_PATTERN = '[0-9]*';
+import { PATTERNS } from '@app/core/constants';
 
 export const UserFormModel = {
   firstName: [
@@ -9,7 +8,7 @@ export const UserFormModel = {
       Validators.required,
       Validators.minLength(3),
       Validators.maxLength(15),
-      Validators.pattern(LETTERS_ONLY_PATTERN),
+      Validators.pattern(PATTERNS.lettersOnly),
     ],
   ],
   lastName: [
@@ -18,7 +17,7 @@ export const UserFormModel = {
       Validators.required,
       Validators.minLength(3),
       Validators.maxLength(15),
-      Validators.pattern(LETTERS_ONLY_PATTERN),
+      Validators.pattern(PATTERNS.lettersOnly),
     ],
   ],
   email: ['', [Validators.required, Validators.email]],
@@ -32,7 +31,7 @@ export const UserFormModel = {
       Validators.required,
       Validators.minLength(3),
       Validators.maxLength(20),
-      Validators.pattern(LETTERS_ONLY_PATTERN),
+      Validators.pattern(PATTERNS.lettersOnly),
     ],
   ],
   country: [
@@ -41,7 +40,7 @@ export const UserFormModel = {
       Validators.required,
       Validators.minLength(3),
       Validators.maxLength(20),
-      Validators.pattern(LETTERS_ONLY_PATTERN),
+      Validators.pattern(PATTERNS.lettersOnly),
     ],
   ],
   zipCode: [
@@ -49,7 +48,7 @@ export const UserFormModel = {
     [
       Validators.minLength(5),
       Validators.maxLength(10),
-      Validators.pattern(NUMBERS_ONLY_PATTERN),
+      Validators.pattern(PATTERNS.numbersOnly),
     ],
   ],
 };
